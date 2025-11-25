@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,6 +18,7 @@ export default function Configure() {
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const addSection = () => {
     setSections([...sections, '']);
@@ -67,9 +69,15 @@ export default function Configure() {
 
     setLoading(true);
     try {
+      if (!user?.id) {
+        toast.error('You must be logged in to create a project');
+        return;
+      }
+
       const { data: project, error: projectError } = await supabase
         .from('projects')
         .insert({
+          user_id: user.id,
           document_type: documentType,
           topic: topic.trim(),
           status: 'draft' as const,
