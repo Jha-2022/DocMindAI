@@ -17,9 +17,9 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const apiKey = Deno.env.get('LOVABLE_API_KEY');
+    const apiKey = Deno.env.get('AI_API_KEY');
     if (!apiKey) {
-      throw new Error('LOVABLE_API_KEY not configured');
+      throw new Error('AI_API_KEY not configured');
     }
 
     const systemPrompt = `You are an expert content editor. Refine the given content based on the user's request while maintaining the overall structure and purpose. Return only the refined content, nothing else.`;

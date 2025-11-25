@@ -9,7 +9,7 @@ DocuGen AI is a full-stack, AI-powered web application that enables authenticate
 ### ✅ Implemented Features
 
 1. **User Authentication & Project Management**
-   - Secure user registration and login using Lovable Cloud (Supabase) authentication
+   - Secure user registration and login using Supabase authentication
    - Email/password authentication with automatic email confirmation
    - Dashboard displaying all user projects with status badges
    - Create, view, and manage multiple projects
@@ -56,11 +56,11 @@ DocuGen AI is a full-stack, AI-powered web application that enables authenticate
 - **Forms**: React Hook Form with Zod validation
 
 ### Backend
-- **Platform**: Lovable Cloud (Supabase-based)
+- **Platform**: Supabase (PostgreSQL + Auth + Edge Functions)
 - **Database**: PostgreSQL with Row Level Security (RLS)
 - **Authentication**: Supabase Auth (email/password)
 - **Edge Functions**: Deno-based serverless functions
-- **AI Integration**: Lovable AI Gateway (Google Gemini models)
+- **AI Integration**: Google Gemini API via AI Gateway
 
 ### Document Generation
 - **Word Documents**: docx library
@@ -136,16 +136,22 @@ All tables have Row Level Security (RLS) policies ensuring users can only access
 
 ### Prerequisites
 - Node.js 18+ and npm
-- A Lovable account (https://lovable.dev)
+- Supabase account and project
+- Google Gemini API key (or compatible AI API)
 
 ### Environment Variables
 
-The project uses Lovable Cloud, which automatically configures:
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
-- `LOVABLE_API_KEY` (for AI features)
+Create a `.env` file in the root directory:
 
-No manual environment configuration needed!
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+```
+
+For edge functions, configure these secrets in your Supabase project:
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `AI_API_KEY` (your AI gateway API key)
 
 ### Local Development
 
@@ -160,7 +166,19 @@ cd <YOUR_PROJECT_NAME>
 npm install
 ```
 
-3. **Run development server**
+3. **Set up Supabase**
+```bash
+# Initialize Supabase
+npx supabase init
+
+# Link to your project
+npx supabase link --project-ref your-project-ref
+
+# Run migrations
+npx supabase db push
+```
+
+4. **Run development server**
 ```bash
 npm run dev
 ```
@@ -169,11 +187,19 @@ The app will be available at `http://localhost:8080`
 
 ### Deployment
 
-The application is automatically deployed through Lovable:
-1. Open your project at https://lovable.dev
-2. Click the "Publish" button in the top right
-3. Your app will be live with a lovable.app domain
-4. Connect a custom domain in Project Settings if desired
+#### Frontend Deployment
+Deploy to any static hosting platform:
+- Vercel: `vercel deploy`
+- Netlify: `netlify deploy`
+- Custom server: `npm run build` and serve the `dist` folder
+
+#### Backend Deployment
+Edge functions are automatically deployed through Supabase CLI:
+```bash
+supabase functions deploy generate-outline
+supabase functions deploy generate-content
+supabase functions deploy refine-content
+```
 
 ## Usage Guide
 
@@ -396,7 +422,6 @@ Response: {
 For issues, questions, or feedback:
 - GitHub Issues: [repository URL]
 - Email: support@docugenai.com
-- Documentation: [docs URL]
 
 ## License
 
@@ -404,4 +429,4 @@ This project is proprietary software created for assignment evaluation purposes.
 
 ---
 
-**Built with ❤️ using React, TypeScript, Tailwind CSS, and Lovable Cloud**
+**Built with ❤️ using React, TypeScript, Tailwind CSS, and Supabase**

@@ -13,9 +13,9 @@ Deno.serve(async (req) => {
   try {
     const { topic, documentType } = await req.json();
 
-    const apiKey = Deno.env.get('LOVABLE_API_KEY');
+    const apiKey = Deno.env.get('AI_API_KEY');
     if (!apiKey) {
-      throw new Error('LOVABLE_API_KEY not configured');
+      throw new Error('AI_API_KEY not configured');
     }
 
     const systemPrompt = documentType === 'docx'
