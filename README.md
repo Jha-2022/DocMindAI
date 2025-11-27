@@ -64,7 +64,7 @@ supabase functions deploy refine-content
 ```
 
 ## Demo Video
-<a href="https://drive.google.com/file/d/1xBtEv4au86bGa0RhLnY9C4CJokH-Ve77/view?usp=drive_link">Demo Link</a>
+<a href="https://drive.google.com/file/d/1WsHzlRW2jjIgNpjnp9K9ODoHXyqoaq5s/view?usp=drivesdk">Demo Link</a>
 
 
 
