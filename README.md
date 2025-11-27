@@ -1,158 +1,5 @@
 # DocuGen AI - AI-Assisted Document Authoring Platform
 
-## Overview
-
-DocuGen AI is a full-stack, AI-powered web application that enables authenticated users to generate, refine, and export structured business documents. The platform supports both Microsoft Word (.docx) and PowerPoint (.pptx) formats with AI-assisted content generation and iterative refinement capabilities.
-
-## Features
-
-### ✅ Implemented Features
-
-1. **User Authentication & Project Management**
-   - Secure user registration and login using Supabase authentication
-   - Email/password authentication with automatic email confirmation
-   - Dashboard displaying all user projects with status badges
-   - Create, view, and manage multiple projects
-
-2. **Document Configuration (Scaffolding)**
-   - Choose between Microsoft Word (.docx) or PowerPoint (.pptx)
-   - Enter main topic/prompt for document generation
-   - For Word documents: Create custom section outline
-   - For PowerPoint: Define slide titles
-   - **AI-Suggested Outlines**: Click "AI Suggest" to auto-generate section/slide titles based on topic
-
-3. **AI-Powered Content Generation**
-   - Section-by-section (or slide-by-slide) content generation
-   - Context-aware AI using Google Gemini 2.5 Flash model
-   - Professional writing style for Word documents (200-400 words per section)
-   - Concise, impactful content for PowerPoint slides (50-150 words per slide)
-   - All content stored securely in the database
-
-4. **Interactive Refinement Interface**
-   - **AI Refinement Prompts**: Text input to refine specific sections (e.g., "Make this more formal", "Add more details")
-   - **Feedback System**: Like/Dislike buttons to record user satisfaction
-   - **Comment System**: Add notes and comments to each section
-   - All refinements and feedback persist in the database
-   - View refinement history for each section
-
-5. **Document Export**
-   - Export to .docx format (Microsoft Word)
-   - Export to .pptx format (PowerPoint)
-   - Professional formatting with proper heading hierarchy
-   - Downloadable files with original topic as filename
-
-6. **Bonus Features**
-   - ✨ **AI-Generated Templates**: During configuration, users can click "AI Suggest Outline" to auto-generate section headers or slide titles
-   - The system generates contextually relevant outlines that users can accept, edit, or regenerate
-
-## Technology Stack
-
-### Frontend
-- **Framework**: React 18 with TypeScript
-- **Styling**: Tailwind CSS with custom design system
-- **UI Components**: Shadcn/ui component library
-- **Routing**: React Router v6
-- **State Management**: React Query (TanStack Query)
-- **Forms**: React Hook Form with Zod validation
-
-### Backend
-- **Platform**: Supabase (PostgreSQL + Auth + Edge Functions)
-- **Database**: PostgreSQL with Row Level Security (RLS)
-- **Authentication**: Supabase Auth (email/password)
-- **Edge Functions**: Deno-based serverless functions
-- **AI Integration**: Google Gemini API via AI Gateway
-
-### Document Generation
-- **Word Documents**: docx library
-- **PowerPoint**: pptxgenjs library
-- **File Saving**: file-saver library
-
-## Project Structure
-
-```
-├── src/
-│   ├── components/
-│   │   ├── ui/               # Shadcn UI components
-│   │   └── ProtectedRoute.tsx # Auth route guard
-│   ├── contexts/
-│   │   └── AuthContext.tsx   # Authentication context
-│   ├── integrations/
-│   │   └── supabase/         # Supabase client & types
-│   ├── pages/
-│   │   ├── Login.tsx         # Login page
-│   │   ├── Register.tsx      # Registration page
-│   │   ├── Dashboard.tsx     # Project dashboard
-│   │   ├── Configure.tsx     # Document configuration
-│   │   └── Editor.tsx        # Content editor & refinement
-│   └── App.tsx               # Main app with routing
-├── supabase/
-│   ├── functions/
-│   │   ├── generate-outline/ # AI outline generation
-│   │   ├── generate-content/ # AI content generation
-│   │   └── refine-content/   # AI content refinement
-│   └── config.toml           # Supabase configuration
-└── README.md
-```
-
-## Database Schema
-
-### Tables
-
-1. **projects**
-   - `id` (UUID, primary key)
-   - `user_id` (UUID, foreign key to auth.users)
-   - `document_type` ('docx' | 'pptx')
-   - `topic` (TEXT)
-   - `status` ('draft' | 'generating' | 'completed')
-   - `created_at`, `updated_at` (timestamps)
-
-2. **sections**
-   - `id` (UUID, primary key)
-   - `project_id` (UUID, foreign key to projects)
-   - `order_index` (INTEGER)
-   - `title` (TEXT)
-   - `content` (TEXT, nullable)
-   - `is_generated` (BOOLEAN)
-   - `created_at`, `updated_at` (timestamps)
-
-3. **refinement_history**
-   - `id` (UUID, primary key)
-   - `section_id` (UUID, foreign key to sections)
-   - `prompt` (TEXT)
-   - `previous_content` (TEXT)
-   - `new_content` (TEXT)
-   - `created_at` (timestamp)
-
-4. **feedback**
-   - `id` (UUID, primary key)
-   - `section_id` (UUID, foreign key to sections)
-   - `is_liked` (BOOLEAN, nullable)
-   - `comment` (TEXT, nullable)
-   - `created_at`, `updated_at` (timestamps)
-
-All tables have Row Level Security (RLS) policies ensuring users can only access their own data.
-
-## Installation & Setup
-
-### Prerequisites
-- Node.js 18+ and npm
-- Supabase account and project
-- Google Gemini API key (or compatible AI API)
-
-### Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
-```
-
-For edge functions, configure these secrets in your Supabase project:
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `AI_API_KEY` (your AI gateway API key)
-
 ### Local Development
 
 1. **Clone the repository**
@@ -193,6 +40,21 @@ Deploy to any static hosting platform:
 - Netlify: `netlify deploy`
 - Custom server: `npm run build` and serve the `dist` folder
 
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+```
+
+For edge functions, configure these secrets in your Supabase project:
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `AI_API_KEY` (your AI gateway API key)
+
+
 #### Backend Deployment
 Edge functions are automatically deployed through Supabase CLI:
 ```bash
@@ -200,6 +62,11 @@ supabase functions deploy generate-outline
 supabase functions deploy generate-content
 supabase functions deploy refine-content
 ```
+
+## Demo Video
+
+
+
 
 ## Usage Guide
 
